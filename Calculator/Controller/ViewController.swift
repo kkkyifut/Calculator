@@ -17,12 +17,15 @@ class ViewController: UIViewController {
     @IBAction func numbers(_ sender: UIButton) {
         if answerLabel.text!.contains("=") {
             additionalLabel.text! += "\n" + answerLabel.text!
-//            additionalLabel.text = "\n" + answerLabel.text!
             answerLabel.text = ""
         }
         if resultLabel.text?.first != "0" {
             resultLabel.text = resultField
-            resultLabel.text! += "\(sender.tag)"
+            if sender.tag == 18 {
+                resultLabel.text! += "."
+            } else {
+                resultLabel.text! += "\(sender.tag)"
+            }
             resultField = resultLabel.text!
             
 //            resultLabel.text = createEmptySpaceInNumber(String(resultField))
@@ -67,7 +70,7 @@ class ViewController: UIViewController {
     }
     
     private func calculateResult() {
-        let actions = ["+", "-", "×", "÷", "⌃"]
+//        let actions = ["+", "-", "×", "÷", "⌃"]
         var results = [String]()
         if !resultField.isEmpty {
             if resultField.contains("+") {
@@ -100,16 +103,22 @@ class ViewController: UIViewController {
             }
         }
         var result = ""
+        var resultDigit = 0.0
         if resultField.contains("+") {
-            result = String(firstNumber + secondNumber)
+            resultDigit = firstNumber + secondNumber
+            result = String(resultDigit.fractionDigits())
         } else if resultField.contains("-") {
-            result = String(firstNumber - secondNumber)
+            resultDigit = firstNumber - secondNumber
+            result = String(resultDigit.fractionDigits())
         } else if resultField.contains("×") {
-            result = String(firstNumber * secondNumber)
+            resultDigit = firstNumber * secondNumber
+            result = String(resultDigit.fractionDigits())
         } else if resultField.contains("÷") {
-            result = String(round(firstNumber / secondNumber * 10e10) / 10.0e10)
+            resultDigit = firstNumber / secondNumber
+            result = String(resultDigit.fractionDigits())
         } else if resultField.contains("⌃") {
-            result = String(pow(firstNumber, secondNumber))
+            resultDigit = pow(firstNumber, secondNumber)
+            result = String(resultDigit.fractionDigits())
         }
         let listResult = result.components(separatedBy: ["."])
         if listResult.count > 1 && listResult[1] == "0" {
@@ -162,7 +171,8 @@ class ViewController: UIViewController {
             resultField += " = "
             var resulting = ""
             var resList = [Double]()
-            var calculating = 0
+//            var calculating = 0
+            print(resultField)
             for char in Array(resultField) where char != " " {
                 if !char.isNumber {
                     resList.append(Double(resulting)!)
@@ -174,7 +184,8 @@ class ViewController: UIViewController {
             if resList.count < 2 {
                 return
             }
-            answerLabel.text = "\(resList[0]) \(character) \(resList[1]) = \(self.resulting)"
+            print(resList)
+            answerLabel.text = "\(resultField) \(self.resulting)"
             resultField = "0"
             resultLabel.text = "0"
             
